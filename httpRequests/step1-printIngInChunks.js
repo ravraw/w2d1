@@ -33,7 +33,6 @@ const getAndPtrintHTMLChunks = () => {
 
       // Create a writable stream
       var writerStream = fs.createWriteStream('step1-output.txt');
-
       // Write the data to stream with encoding to be utf8
       writerStream.write(dataRecieved, 'UTF8');
 
