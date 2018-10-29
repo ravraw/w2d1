@@ -1,7 +1,9 @@
 // use https mode from node.js to make request
 const https = require('https');
+const fs = require('fs');
 // function to make requests
 const getAndPtrintHTMLChunks = () => {
+  let dataRecieved = '';
   //request options
   const requestOptions = {
     host: 'sytantris.github.io',
@@ -14,8 +16,10 @@ const getAndPtrintHTMLChunks = () => {
     res.setEncoding('UTF8');
 
     // output data recieved
-    res.on('data', data => {
-      console.log(`${data} \n`);
+    res.on('data', chunk => {
+      console.log(`${chunk} \n`);
+      console.log(`Chunk Received. Length:, ${chunk.length} \n`);
+      dataRecieved += chunk;
     });
 
     // log error
@@ -25,13 +29,30 @@ const getAndPtrintHTMLChunks = () => {
 
     //log message to completion of response
     res.on('end', () => {
-      console.log('No more data read the data');
-    });
+      console.log('No more chunkread the data');
 
-    // finish
-    res.on('finish', () => {
-      console.log('All data logged to stdOut');
+      // Create a writable stream
+      var writerStream = fs.createWriteStream('step1-output.txt');
+
+      // Write the data to stream with encoding to be utf8
+      writerStream.write(dataRecieved, 'UTF8');
+
+      // Mark the end of file
+      writerStream.end();
+
+      // Handle stream events --> finish, and error
+      writerStream.on('finish', function() {
+        console.log('Write completed.');
+      });
+
+      writerStream.on('error', function(err) {
+        console.log(err.stack);
+      });
+
+      console.log('Program Ended');
     });
+    // finish
+    res.on('finish', () => {});
   });
 };
 
