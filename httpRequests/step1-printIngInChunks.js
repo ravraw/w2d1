@@ -40,13 +40,14 @@ const getAndPtrintHTMLChunks = () => {
       // Mark the end of file
       writerStream.end();
 
+      // error
+      writerStream.on('error', function(err) {
+        console.log(err.stack);
+      });
+
       // Handle stream events --> finish, and error
       writerStream.on('finish', function() {
         console.log('Write completed.');
-      });
-
-      writerStream.on('error', function(err) {
-        console.log(err.stack);
       });
 
       console.log('Program Ended');
